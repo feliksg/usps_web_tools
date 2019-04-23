@@ -19,7 +19,7 @@ module USPSWebTools
       end
 
       def formatted_address
-        [addr1, addr2, "#{city}, #{state} #{zipcode}"].delete_if(&:nil?).join("\n")
+        [addr1, addr2, "#{city}, #{state} #{zipcode}"].delete_if(&:nil?).delete_if(&:empty?).join("\n")
       end
 
       private
