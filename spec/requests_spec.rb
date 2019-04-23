@@ -36,7 +36,7 @@ RSpec.describe USPSWebTools::Requests do
     let(:parameters) {[parameter1]}
     let(:requests){USPSWebTools::Requests.new(api: 'AddressValidateRequest', user_id: usps_user, password: usps_pw, parameters: parameters)}
     it 'should provide the url to USPS Web Tools for a request on zipcode lookup' do
-      expect(requests.to_url).to eq("https://secure.shippingapis.com/ShippingAPI.dll?API=Verify&XML=%3CAddressValidateRequest%20USERID=%22usps_user%22%3E%3CRevision%3E1%3C/Revision%3E%3CAddress%20ID=%221%22%3E%3CFirmName/%3E%3CAddress1%3E445%20Grant%20Ave%3C/Address1%3E%3CAddress2%3ESuite%20700%3C/Address2%3E%3CCity%3ESF%3C/City%3E%3CState%3ECA%3C/State%3E%3CUrbanization/%3E%3CZip5/%3E%3CZip4/%3E%3C/Address%3E%3C/AddressValidateRequest%3E")
+      expect(requests.to_url).to eq("https://secure.shippingapis.com/ShippingAPI.dll?API=Verify&XML=%3CAddressValidateRequest%20USERID=%22usps_user%22%3E%3CRevision%3E1%3C/Revision%3E%3CAddress%20ID=%221%22%3E%3CFirmName/%3E%3CAddress1%3E445%20Grant%20Ave%3C/Address1%3E%3CAddress2/%3E%3CCity%3ESF%3C/City%3E%3CState%3ECA%3C/State%3E%3CUrbanization/%3E%3CZip5/%3E%3CZip4/%3E%3C/Address%3E%3C/AddressValidateRequest%3E")
     end
   end
 end
