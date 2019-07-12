@@ -2,6 +2,8 @@
 
 Ruby API for accessing the USPS WebTools API
 
+USPS Web Tools API: https://www.usps.com/business/web-tools-apis/#api
+
 ## Installation
 
 Add this line to your application's Gemfile:
