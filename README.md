@@ -61,4 +61,4 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/usps_web_tools.
+Bug reports and pull requests are welcome on GitHub at https://github.com/lkfken/usps_web_tools.
