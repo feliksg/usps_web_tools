@@ -17,7 +17,7 @@ module USPSWebTools
     end
 
     def id
-      node.attr('ID')
+      node.xpath('.//Address').attr('ID').value
     end
 
     def error
