@@ -9,7 +9,7 @@ module USPSWebTools
       end
 
       def deliverable?
-        valid? && return_text.nil?
+        valid? && !vacant? && return_text.nil?
       end
 
       def vacant?
@@ -21,7 +21,7 @@ module USPSWebTools
       end
 
       def formatted_address
-        @address.formatted_address if @address
+        address.formatted_address if address
       end
 
       def firm_name
@@ -38,6 +38,10 @@ module USPSWebTools
 
       def city
         node.xpath('.//City').map(&:text).first
+      end
+
+      def city_abbreviation
+        node.xpath('.//CityAbbreviation').map(&:text).first
       end
 
       def state
@@ -88,6 +92,11 @@ module USPSWebTools
         node.xpath('.//ReturnText').map(&:text).first
       end
 
+      def address
+        @address ||= begin
+          USPSWebTools::Parameter::Address.new(id: id, addr1: addr1, addr2: addr2, city: city, state: state, zip5: zip5, zip4: zip4) if valid?
+        end
+      end
     end
   end
 end
