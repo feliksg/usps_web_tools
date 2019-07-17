@@ -6,12 +6,11 @@ module USPSWebTools
     extend Forwardable
     include Enumerable
 
-    def_delegators :@response_objects, :[], :each, :size
+    def_delegators :response_objects, :[], :each, :size
     attr_reader :xml
 
     def initialize(xml:)
       @xml = xml
-      @response_objects = response_objects
     end
 
     def error?
@@ -21,19 +20,24 @@ module USPSWebTools
     private
 
     def usps_responses
-      @usps_responses ||= (error? ? [] : doc.xpath("//#{response_group}").map(&:to_xml))
+      @usps_responses ||= doc.xpath("//#{response_group_classification}").map(&:to_xml)
     end
 
     def response_objects
-      case response_api_signature
-      when 'CityStateLookupResponse'
-        usps_responses.map {|response| USPSWebTools::Response::CityStateLookup.new(response: response)}
-      when 'AddressValidateResponse'
-        usps_responses.map {|response| USPSWebTools::Response::AddressValidate.new(response: response)}
-      when 'ZipCodeLookupResponse'
-        usps_responses.map {|response| USPSWebTools::Response::ZipCodeLookup.new(response: response)}
-      else
-        raise USPSWebTools::Error, "Undefined Response API <#{response_api_signature}>!"
+      raise USPSWebTools::ResponseGroupError if error?
+      @response_objects ||= begin
+        case response_api_signature
+        when 'CityStateLookupResponse'
+          usps_responses.map {|response| USPSWebTools::Response::CityStateLookup.new(response: response)}
+        when 'AddressValidateResponse'
+          usps_responses.map {|response| USPSWebTools::Response::AddressValidate.new(response: response)}
+        when 'ZipCodeLookupResponse'
+          usps_responses.map {|response| USPSWebTools::Response::ZipCodeLookup.new(response: response)}
+        when 'Error'
+          [USPSWebTools::Response::Error.new(response: xml)]
+        else
+          raise USPSWebTools::Error, "Undefined Response API <#{response_api_signature}>!"
+        end
       end
     end
 
@@ -45,8 +49,7 @@ module USPSWebTools
       doc.child.name
     end
 
-    def response_group
-      raise USPSWebTools::ResponseGroupError if error?
+    def response_group_classification
       case response_api_signature
       when 'CityStateLookupResponse'
         'ZipCode'

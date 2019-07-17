@@ -1,7 +1,6 @@
 module USPSWebTools
   module Response
     class Error
-      include Response
       attr_reader :response
 
       def initialize(response:)
