@@ -14,10 +14,14 @@ module USPSWebTools
       @response_objects = response_objects
     end
 
+    def error?
+      response_api_signature == 'Error'
+    end
+
     private
 
     def usps_responses
-      @usps_responses ||= doc.xpath("//#{response_group}").map(&:to_xml)
+      @usps_responses ||= (error? ? [] : doc.xpath("//#{response_group}").map(&:to_xml))
     end
 
     def response_objects
@@ -29,7 +33,7 @@ module USPSWebTools
       when 'ZipCodeLookupResponse'
         usps_responses.map {|response| USPSWebTools::Response::ZipCodeLookup.new(response: response)}
       else
-        raise USPSWebTools::Error, "Undefined Response API #{response_api_signature}!"
+        raise USPSWebTools::Error, "Undefined Response API <#{response_api_signature}>!"
       end
     end
 
@@ -42,6 +46,7 @@ module USPSWebTools
     end
 
     def response_group
+      raise USPSWebTools::ResponseGroupError if error?
       case response_api_signature
       when 'CityStateLookupResponse'
         'ZipCode'
@@ -50,7 +55,7 @@ module USPSWebTools
       when 'ZipCodeLookupResponse'
         'Address'
       else
-        raise USPSWebTools::Error, "Undefined Response API #{response_api_signature}!"
+        raise USPSWebTools::Error, "Undefined Response API <#{response_api_signature}>!"
       end
     end
   end

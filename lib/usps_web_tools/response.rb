@@ -45,3 +45,4 @@ end
 require_relative 'response/address_validate'
 require_relative 'response/city_state_lookup'
 require_relative 'response/zip_code_lookup'
+require_relative 'response/error'
